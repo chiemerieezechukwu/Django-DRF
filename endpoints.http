@@ -1,0 +1,43 @@
+@BASE_URL = http://localhost:8000
+
+###
+
+POST {{BASE_URL}}/cars/
+Content-Type: application/json;charset=UTF-8
+
+{
+    "make" : "VOLKSWAGEN",
+    "model" : "Golf"
+}
+
+###
+
+POST {{BASE_URL}}/cars/
+Content-Type: application/json;charset=UTF-8
+
+{
+    "make" : "VOLKSWAGEN",
+    "model" : "Passat"
+}
+
+###
+
+GET {{BASE_URL}}/cars/
+
+###
+
+DELETE {{BASE_URL}}/cars/1/
+
+###
+
+POST {{BASE_URL}}/rate/
+Content-Type: application/json;charset=UTF-8
+
+{
+    "car_id" : 2,
+    "rating" : 3
+}
+
+###
+
+GET {{BASE_URL}}/popular/
