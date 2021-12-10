@@ -89,7 +89,7 @@ class TestRatePopularAPIs(TransactionTestCase):
         ]
         for car in car_list:
             # add car to db
-            self.client.post(reverse('cars_view'), car).json()
+            self.client.post(reverse('cars_view'), car)
 
     def tearDown(self):
         Car.objects.all().delete()
