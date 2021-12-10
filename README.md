@@ -19,7 +19,7 @@ It will add car entries to the database as well as assign multiple random rating
 ### Running tests inside Docker
 With the containers still running, exec into it with the bash command by running
 ```
-$ docker exec -it {APP CONTAINER ID} bash
+$ docker exec -it django-drf-api bash
 ```
 Run the command below to execute all test cases
 ```
