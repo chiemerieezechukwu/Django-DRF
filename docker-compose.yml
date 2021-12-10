@@ -17,10 +17,17 @@ services:
       - POSTGRES_HOST=db
     command: bash -c "python manage.py makemigrations && python manage.py migrate && gunicorn crudproject.wsgi --bind 0.0.0.0:8000"
     depends_on:
-      - db
+      db:
+        condition: service_healthy
+
   db:
     container_name: django-drf-db
     image: postgres:latest
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
+      interval: 3s
+      timeout: 30s
+      retries: 5
     environment:
       - POSTGRES_NAME=${POSTGRES_NAME}
       - POSTGRES_USER=${POSTGRES_USER}
