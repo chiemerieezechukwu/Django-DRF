@@ -1,15 +1,32 @@
-import json
 import random
+from copy import deepcopy
+from unittest.mock import patch
 from django.shortcuts import reverse
 from django.test import TransactionTestCase
 from api.models import Car
+
+
+EXT_API_RETURN_VALUE = {
+    'Count': 4,
+    'Message': 'Response returned successfully',
+    'SearchCriteria': 'Make:Volkswagen',
+    'Results': [
+        {'Make_ID': 482, 'Make_Name': 'VOLKSWAGEN', 'Model_ID': 3133, 'Model_Name': 'Golf'},
+        {'Make_ID': 482, 'Make_Name': 'VOLKSWAGEN', 'Model_ID': 3134, 'Model_Name': 'Passat'},
+        {'Make_ID': 482, 'Make_Name': 'VOLKSWAGEN', 'Model_ID': 3135, 'Model_Name': 'Phaeton'},
+        {'Make_ID': 482, 'Make_Name': 'VOLKSWAGEN', 'Model_ID': 1951, 'Model_Name': 'Routan'},
+    ]
+}
 
 
 class TestCarsAPI(TransactionTestCase):
 
     reset_sequences = True
     
-    def setUp(self):
+    @patch('api.services.get_models_for_make')
+    def setUp(self, ext_api):
+        ext_api.return_value = deepcopy(EXT_API_RETURN_VALUE)
+
         self.client.post(reverse('cars_view'), {
             'make': 'VOLKSWAGEN',
             'model': 'Golf'
@@ -18,7 +35,10 @@ class TestCarsAPI(TransactionTestCase):
     def tearDown(self):
         Car.objects.all().delete()
 
-    def test_car_entry_creation(self):
+    @patch('api.services.get_models_for_make')
+    def test_car_entry_creation(self, ext_api):
+        ext_api.return_value = deepcopy(EXT_API_RETURN_VALUE)
+
         response = self.client.post(reverse('cars_view'), {
             'make': 'VOLKSWAGEN',
             'model': 'Passat'
@@ -54,7 +74,10 @@ class TestCarDeleteAPI(TransactionTestCase):
 
     reset_sequences = True
 
-    def setUp(self):
+    @patch('api.services.get_models_for_make')
+    def setUp(self, ext_api):
+        ext_api.return_value = deepcopy(EXT_API_RETURN_VALUE)
+
         self.client.post(reverse('cars_view'), {
             'make': 'VOLKSWAGEN',
             'model': 'Golf'
@@ -81,7 +104,9 @@ class TestRatePopularAPIs(TransactionTestCase):
 
     reset_sequences = True
 
-    def setUp(self):
+    @patch('api.services.get_models_for_make')
+    def setUp(self, ext_api):
+        ext_api.return_value = deepcopy(EXT_API_RETURN_VALUE)
         car_list = [
             {'make': 'VOLKSWAGEN', 'model': 'Golf'},
             {'make': 'VOLKSWAGEN', 'model': 'Routan'},
@@ -95,6 +120,8 @@ class TestRatePopularAPIs(TransactionTestCase):
         Car.objects.all().delete()
 
     def test_add_ratings_popular_cars(self):
+        self.assertEqual(Car.objects.count(), 3)
+
         response = self.client.get(reverse('cars_view'))
         cars = response.json()
 
@@ -109,5 +136,6 @@ class TestRatePopularAPIs(TransactionTestCase):
 
         response = self.client.get(reverse('popular_view'))
         cars = response.json()
+
         # check that the response is sorted in desc. order of the key, 'rates_number'
         self.assert_(all(cars[i]['rates_number'] <= cars[max(i-1, 0)]['rates_number'] for i in range(len(cars))))
