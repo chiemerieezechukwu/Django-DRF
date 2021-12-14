@@ -30,7 +30,7 @@ def check_model_in_make(car_models: dict, model_name: str) -> bool:
 
 def create_save_car_object(make, model):
     if retrieve_unique_car_by_filter(make, model):
-        return "This car definition exists already", 403
+        return "This car definition exists already", 400
 
     car_models = get_models_for_make(make)
     if car_models and check_model_in_make(car_models, model):
