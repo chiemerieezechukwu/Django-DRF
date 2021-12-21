@@ -11,6 +11,7 @@ services:
     environment:
       - SECRET_KEY=${SECRET_KEY}
       - DEBUG=${DEBUG}
+      - ENGINE=${ENGINE}
       - POSTGRES_NAME=${POSTGRES_NAME}
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
@@ -22,7 +23,7 @@ services:
 
   db:
     container_name: django-drf-db
-    image: postgres:latest
+    image: postgres:14.0-alpine
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
       interval: 3s
