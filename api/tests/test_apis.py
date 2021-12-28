@@ -138,4 +138,4 @@ class TestRatePopularAPIs(TransactionTestCase):
         cars = response.json()
 
         # check that the response is sorted in desc. order of the key, 'rates_number'
-        self.assert_(all(cars[i]['rates_number'] <= cars[max(i-1, 0)]['rates_number'] for i in range(len(cars))))
+        self.assertTrue(all(cars[i]['rates_number'] <= cars[max(i-1, 0)]['rates_number'] for i in range(len(cars))))

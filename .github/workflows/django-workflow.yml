@@ -24,4 +24,4 @@ jobs:
           POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
         run: docker-compose up -d
       - name: Run Tests
-        run: docker exec django-drf-api python manage.py test
+        run: docker exec django-drf-api bash run_tests.sh

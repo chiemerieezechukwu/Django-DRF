@@ -28,5 +28,11 @@ Run the command below to execute all test cases
 $ python manage.py test
 ```
 
+OR use a script helper that uses pytest instead
+
+```
+$ docker exec django-drf-api bash run_tests.sh
+```
+
 ## Heroku
 The Heroku deployment can be found at - http://django-drf-api.herokuapp.com/
